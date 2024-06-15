@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path, Request, Response
+from fastapi import APIRouter, Depends, Path, Request, Response, Query
 
 from .use_cases import ListAllPokemons, ReadPokemon, ExportPokemonsToXML
 from .schemas import FullPokemonDetailSchema, ReadAllPokemonSchema
@@ -7,9 +7,12 @@ router = APIRouter(prefix="/pokemons")
 
 @router.get("", response_model=ReadAllPokemonSchema)
 async def read_all(
-    request: Request, use_case: ListAllPokemons = Depends(ListAllPokemons)
+    request: Request,
+    use_case: ListAllPokemons = Depends(ListAllPokemons),
+    limit: int = Query(None, ge=1),
+    offset: int = Query(0, ge=0),
 ) -> ReadAllPokemonSchema:
-    return ReadAllPokemonSchema(pokemons=[nb async for nb in use_case.execute()])
+    return ReadAllPokemonSchema(pokemons=[nb async for nb in use_case.execute(limit=limit, offset=offset)])
 
 @router.get("/{pokemon_id}", response_model=FullPokemonDetailSchema)
 async def read(
