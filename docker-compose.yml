@@ -48,7 +48,7 @@ services:
     command: >
       bash -c 'while !</dev/tcp/db-test/5432; do sleep 1; done;
               alembic upgrade head &&
-              APP_CONFIG_FILE="test" pytest'
+              APP_CONFIG_FILE="test" pytest -s'
     depends_on:
       - db-test
       - api

@@ -3,6 +3,7 @@ from httpx import AsyncClient
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from typing import AsyncGenerator
+from httpx import AsyncClient, ASGITransport
 
 from app.main import app
 from app.db import get_session
@@ -14,50 +15,24 @@ import os
 os.environ['TEST_DATABASE'] = 'true'
 os.environ['DB_URI'] = 'postgresql+asyncpg://postgres:postgres@db-test:5432/rocketman-tech-test'
 
-# Configuração do banco de dados de teste
 @pytest.fixture(scope="module")
 async def setup_db():
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    engine = create_async_engine("postgresql+asyncpg://postgres:postgres@db-test:5432/rocketman-tech-test")
     async with engine.begin() as conn:
-        await conn.execute(text("PRAGMA foreign_keys=ON"))
         try:
             await conn.execute(text("DROP TABLE IF EXISTS test_table"))
-            # await conn.execute(text("DROP TABLE IF EXISTS types"))
-            # await conn.execute(text("DROP TABLE IF EXISTS pokemons"))
+            await conn.execute(text("delete from types"))
+            await conn.execute(text("delete from pokemons"))
         except:
             pass
 
     async with engine.begin() as conn:
-        """
-        Using SQL in this way to create the table is not recommended
-        I only used it because I didn't have time to carry out complex configurations and needed to do it in advance.
-        But this is not scalable nor practical to maintain, so you must configure a test db as well as the test environment
-        """
-        await conn.execute(text("CREATE TABLE test_table (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)"))
-        await conn.execute(text("""
-                CREATE TABLE pokemons (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                front_picture TEXT,
-                back_picture TEXT,
-                hp INTEGER NOT NULL,
-                attack INTEGER NOT NULL,
-                defense INTEGER NOT NULL,
-                special_attack INTEGER NOT NULL,
-                special_defense INTEGER NOT NULL,
-                speed INTEGER NOT NULL
-            );
-            """))
-        await conn.execute(text("""
-                CREATE TABLE types (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                pokemon_id INTEGER NOT NULL,
-                FOREIGN KEY(pokemon_id) REFERENCES pokemons(id)
-            );
-            """))
+        await conn.execute(text("CREATE TABLE test_table (id SERIAL PRIMARY KEY, name TEXT)"))
 
     yield engine
+
+    async with engine.begin() as conn:
+        await conn.execute(text("DROP TABLE IF EXISTS test_table"))
 
     await engine.dispose()
 
@@ -84,10 +59,10 @@ async def get_db(async_db):
             await session.rollback()
             raise
 
-
-@pytest.fixture(scope="module")
+@pytest.fixture
 async def ac() -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app, base_url="http://test") as client:
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as client:
         yield client
 
 @pytest.fixture(scope="module")
