@@ -1,11 +1,8 @@
-from alembic import op
 import asyncio
-from sqlalchemy.orm import Session
 import httpx
 from app.models.pokemon import Pokemon, Type
 from asyncio import Semaphore
 from app.db import AsyncSessionLocal
-# revision identifiers, used by Alembic.
 
 async def fetch_pokemon_data():
     url = "https://pokeapi.co/api/v2/pokemon?limit=9999999"
@@ -43,31 +40,27 @@ def format_data(data: dict) -> dict:
     }
 
 async def async_upgrade() -> None:
-    # Inicie uma nova sessão do SQLAlchemy
     async with AsyncSessionLocal() as session:
 
-        # Fetch the list of pokemons
         pokemons = await fetch_pokemon_data()
 
-        # Create a semaphore to limit the number of simultaneous requests
         semaphore = Semaphore(20)
 
-        # Fetch the details of each pokemon in parallel
         tasks = [fetch_pokemon_details(semaphore, pokemon["url"].split('/')[-2]) for pokemon in pokemons]
         pokemons = await asyncio.gather(*tasks)
 
-        batch_size = 300  # Ajuste este valor para o que melhor se adequa ao seu caso
+        batch_size = 300
         for i, poke in enumerate(pokemons, start=1):
             data = format_data(data=poke)
             pokemon = Pokemon(**data)
             session.add(pokemon)
-            await session.flush()  # Sincronize a sessão para obter o ID do pokemon
+            await session.flush()
 
-            type = Type(pokemon_id=pokemon.id, name=pokemon.name)  # Substitua 'pokemon_id' pelo nome real da sua chave estrangeira
+            type = Type(pokemon_id=pokemon.id, name=pokemon.name)
             session.add(type)
 
             if i % batch_size == 0:
-                await session.commit()  # Faça commit a cada 'batch_size' inserções
+                await session.commit()
             await session.commit()
 
 asyncio.run(async_upgrade())

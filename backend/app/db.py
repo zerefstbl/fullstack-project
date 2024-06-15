@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from app.settings import settings
 
 logger = logging.getLogger(__name__)
-print("AQUI?")
 async_engine = create_async_engine(
     settings.DB_URI,
     pool_pre_ping=True,
