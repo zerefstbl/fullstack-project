@@ -4,7 +4,7 @@ from typing import Annotated, AsyncIterator
 from fastapi import Depends
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-
+from sqlalchemy.orm import sessionmaker
 from app.settings import settings
 
 logger = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 
-from api.main import router as api_router
+from app.api.main import router as api_router
 
 app = FastAPI(title="rocketman-challenge")
 
