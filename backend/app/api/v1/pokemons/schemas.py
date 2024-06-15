@@ -1,0 +1,18 @@
+from pydantic import BaseModel, ConfigDict
+from typing import List
+class BasePokemonSchema(BaseModel):
+    id: int
+    name: str
+    front_picture: str | None
+    back_picture: str | None
+    hp: int
+    attack: int
+    defense: int
+    special_attack: int
+    special_defense: int
+    speed: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+class ReadAllPokemonSchema(BaseModel):
+    pokemons: List[BasePokemonSchema]
