@@ -3,6 +3,7 @@ import httpx
 from app.models.pokemon import Pokemon, Type
 from asyncio import Semaphore
 from app.db import AsyncSessionLocal
+from app.api.v1.pokemons.repository import PokemonRepository
 
 async def fetch_pokemon_data():
     url = "https://pokeapi.co/api/v2/pokemon?limit=999999"
@@ -41,6 +42,9 @@ def format_data(data: dict) -> dict:
 
 async def async_upgrade() -> None:
     async with AsyncSessionLocal() as session:
+        pokemons = await PokemonRepository(session=session).get_count()
+        if pokemons:
+            return
 
         pokemons = await fetch_pokemon_data()
 
@@ -63,6 +67,5 @@ async def async_upgrade() -> None:
 
             if i % batch_size == 0:
                 await session.commit()
-            await session.commit()
 
 asyncio.run(async_upgrade())

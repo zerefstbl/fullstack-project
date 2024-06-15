@@ -4,7 +4,7 @@ services:
   api:
     build: ./backend
     command: |
-      bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python app/main.py'
+      bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; alembic upgrade head && python initial_data.py && python app/main.py'
     ports:
       - "8000:8000"
     depends_on:
@@ -12,8 +12,8 @@ services:
     env_file:
       - .env
     environment:
-      APP_CONFIG_FILE: example
-      POSTGRES_HOST: localhost
+      APP_CONFIG_FILE: local
+      POSTGRES_HOST: db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: rocketman-tech

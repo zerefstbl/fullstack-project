@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV PYTHONPATH=/usr/src/app
 
 # copy requirements file
 COPY ./requirements.txt /usr/src/app/requirements.txt
@@ -20,9 +21,8 @@ RUN set -eux \
     && pip install -r /usr/src/app/requirements.txt \
     && rm -rf /root/.cache/pip
 
-# RUN python initial_data.py
 
 # copy project
 COPY ./alembic.ini /usr/src/app/alembic.ini
 COPY . /usr/src/app/
-## Run alembic migrations
+

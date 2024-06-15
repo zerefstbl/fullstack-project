@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import Session
 from typing import AsyncIterator
+from sqlalchemy import func
 
 T = TypeVar("T")  # Tipo genérico para o modelo
 
@@ -31,3 +32,8 @@ class BaseRepository(Generic[T]):
     async def delete(self, instance: T) -> None:
         await self.session.delete(instance)
         await self.session.flush()
+
+    async def get_count(self) -> int | None:
+        stmt = select(func.count()).select_from(self.model)
+        result = await self.session.scalar(stmt)
+        return result
