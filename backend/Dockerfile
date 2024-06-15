@@ -20,5 +20,9 @@ RUN set -eux \
     && pip install -r /usr/src/app/requirements.txt \
     && rm -rf /root/.cache/pip
 
+# RUN python initial_data.py
+
 # copy project
+COPY ./alembic.ini /usr/src/app/alembic.ini
 COPY . /usr/src/app/
+## Run alembic migrations

@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./backend
+    command: |
+      bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; python app/main.py'
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+    environment:
+      APP_CONFIG_FILE: example
+      POSTGRES_HOST: localhost
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rocketman-tech
+
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+       - .postgres_data:/var/lib/postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rocketman-tech
+
+  db-test:
+    image: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rocketman-tech-test
+
+  test:
+    build:
+      context: ./backend
+      args:
+        ENV_FILE: ${ENV_FILE:-.env.test}
+    command: >
+      bash -c 'while !</dev/tcp/db-test/5432; do sleep 1; done;
+              alembic upgrade head &&
+              APP_CONFIG_FILE="test" pytest'
+    depends_on:
+      - db-test
+      - api
+    environment:
+      APP_CONFIG_FILE: test
+      POSTGRES_HOST: db-test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rocketman-tech-test
+
+volumes:
+  postgres_data:
+  postgres_test_data:

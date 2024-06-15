@@ -4,8 +4,14 @@ from typing import Annotated, AsyncIterator
 from fastapi import Depends
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from sqlalchemy.orm import sessionmaker
 from app.settings import settings
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+if os.environ['APP_CONFIG_FILE'] == 'test':
+    print('MANO')
+    settings.DB_URI='postgresql+asyncpg://postgres:postgres@db-test:5432/rocketman-tech-test'
 
 logger = logging.getLogger(__name__)
 async_engine = create_async_engine(

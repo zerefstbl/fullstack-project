@@ -18,7 +18,7 @@ async def setup_data(session: AsyncSession) -> None:
     })
     session.add_all([pokemon])
     await session.flush()
-
+    print(pokemon.id)
     type = Type(name="Poison", pokemon_id=pokemon.id)
     type2 = Type(name="Grass", pokemon_id=pokemon.id)
     session.add_all([type, type2])
@@ -33,7 +33,6 @@ async def test_pokemons_read(ac: AsyncClient, session: AsyncSession) -> None:
     response = await ac.get(
         f"/api/v1/pokemons",
     )
-
+    print(len(response.json()['pokemons']))
     assert 200 == response.status_code
-    # assert len(response.json()) < 1
 

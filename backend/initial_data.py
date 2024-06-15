@@ -57,9 +57,7 @@ async def async_upgrade() -> None:
             await session.flush()
 
             types = [type for type in poke.get('types', [])]
-            print(types)
             for type in types:
-                print(type)
                 type = Type(pokemon_id=pokemon.id, name=type['type']['name'])
                 session.add(type)
 
