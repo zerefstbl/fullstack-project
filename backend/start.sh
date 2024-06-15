@@ -12,5 +12,6 @@ trap stop_containers INT
 docker-compose build
 
 docker-compose run --rm test
+docker-compose down db-test
 
 docker-compose run api
