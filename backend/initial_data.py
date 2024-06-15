@@ -42,8 +42,11 @@ def format_data(data: dict) -> dict:
 
 async def async_upgrade() -> None:
     async with AsyncSessionLocal() as session:
+        print('Adding initial pokemons')
         pokemons = await PokemonRepository(session=session).get_count()
+        print(pokemons)
         if pokemons:
+            print('Finished.')
             return
 
         pokemons = await fetch_pokemon_data()
@@ -67,5 +70,10 @@ async def async_upgrade() -> None:
 
             if i % batch_size == 0:
                 await session.commit()
+        try:
+            await session.commit()
+        except:
+            pass
+        print('Finished')
 
 asyncio.run(async_upgrade())
