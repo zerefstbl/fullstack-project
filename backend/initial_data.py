@@ -5,7 +5,7 @@ from asyncio import Semaphore
 from app.db import AsyncSessionLocal
 
 async def fetch_pokemon_data():
-    url = "https://pokeapi.co/api/v2/pokemon?limit=9999999"
+    url = "https://pokeapi.co/api/v2/pokemon?limit=999999"
     async with httpx.AsyncClient() as client:
         response = await client.get(url)
         if response.status_code != 200:
@@ -56,8 +56,12 @@ async def async_upgrade() -> None:
             session.add(pokemon)
             await session.flush()
 
-            type = Type(pokemon_id=pokemon.id, name=pokemon.name)
-            session.add(type)
+            types = [type for type in poke.get('types', [])]
+            print(types)
+            for type in types:
+                print(type)
+                type = Type(pokemon_id=pokemon.id, name=type['type']['name'])
+                session.add(type)
 
             if i % batch_size == 0:
                 await session.commit()
