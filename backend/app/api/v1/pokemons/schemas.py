@@ -1,5 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 from typing import List
+
 class BasePokemonSchema(BaseModel):
     id: int
     name: str
@@ -16,3 +17,13 @@ class BasePokemonSchema(BaseModel):
 
 class ReadAllPokemonSchema(BaseModel):
     pokemons: List[BasePokemonSchema]
+
+class TypeSchema(BaseModel):
+    id: int
+    name: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class FullPokemonDetailSchema(BasePokemonSchema):
+    types: List[TypeSchema]
