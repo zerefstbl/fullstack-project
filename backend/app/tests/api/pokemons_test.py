@@ -58,15 +58,33 @@ async def setup_data(session: AsyncSession):
 async def test_pokemons_read_all(ac: AsyncClient, session: AsyncSession, setup_data) -> None:
     response = await ac.get("/api/v1/pokemons")
     response_json = response.json()
+    pokemon = await PokemonRepository(session=session).get_by_id(id=1, include_types=True)
 
     assert response.status_code == 200
     assert len(response_json['pokemons']) == 2
+    bulbassaur.update({
+        'types': [
+            {
+                'id': type.id,
+                'name': type.name
+            }
+            for type in pokemon.types
+        ]
+    })
+    ivyssaur.update({
+        'types': []
+    })
 
     expected_value = {
         'pokemons': [
             bulbassaur,
-            ivyssaur
-        ]
+            ivyssaur,
+        ],
+        "pagination": {
+            "total": 2,
+            "next": 0,
+            "previous": 0
+        }
     }
 
 

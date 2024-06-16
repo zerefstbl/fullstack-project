@@ -10,7 +10,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 if os.environ['APP_CONFIG_FILE'] == 'test':
-    print('MANO')
     settings.DB_URI='postgresql+asyncpg://postgres:postgres@db-test:5432/rocketman-tech-test'
 
 logger = logging.getLogger(__name__)
