@@ -15,9 +15,6 @@ class BasePokemonSchema(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
-class ReadAllPokemonSchema(BaseModel):
-    pokemons: List[BasePokemonSchema]
-
 class TypeSchema(BaseModel):
     id: int
     name: str
@@ -27,3 +24,6 @@ class TypeSchema(BaseModel):
 
 class FullPokemonDetailSchema(BasePokemonSchema):
     types: List[TypeSchema]
+
+class ReadAllPokemonSchema(BaseModel):
+    pokemons: List[FullPokemonDetailSchema]

@@ -11,10 +11,12 @@ class PokemonRepository(BaseRepository[Pokemon]):
         self.session = session
         super().__init__(session, Pokemon)
 
-    async def get_all(self, limit: int = 0, offset: int = 0) -> AsyncIterator[Pokemon]:
+    async def get_all(self, limit: int = 0, offset: int = 0, include_types: bool = False) -> AsyncIterator[Pokemon]:
         stmt = select(Pokemon).offset(offset=offset)
         if limit:
             stmt = stmt.limit(limit=limit)
+        if include_types:
+            stmt = stmt.options(selectinload(Pokemon.types))
         stream = await self.session.stream_scalars(stmt.order_by(Pokemon.name))
         async for row in stream:
             yield row

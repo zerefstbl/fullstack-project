@@ -43,37 +43,51 @@ def format_data(data: dict) -> dict:
 async def async_upgrade() -> None:
     async with AsyncSessionLocal() as session:
         print('Adding initial pokemons')
-        pokemons = await PokemonRepository(session=session).get_count()
-        print(pokemons)
-        if pokemons:
+        pokemons_count = await PokemonRepository(session=session).get_count()
+        print(pokemons_count)
+        if pokemons_count:
             print('Finished.')
             return
 
-        pokemons = await fetch_pokemon_data()
+        pokemons_data = await fetch_pokemon_data()
 
-        semaphore = Semaphore(20)
+        semaphore = Semaphore(5)  # Limita o número de tarefas simultâneas
 
-        tasks = [fetch_pokemon_details(semaphore, pokemon["url"].split('/')[-2]) for pokemon in pokemons]
-        pokemons = await asyncio.gather(*tasks)
+        tasks = [fetch_pokemon_details(semaphore, pokemon["url"].split('/')[-2]) for pokemon in pokemons_data]
 
-        batch_size = 300
-        for i, poke in enumerate(pokemons, start=1):
-            data = format_data(data=poke)
-            pokemon = Pokemon(**data)
-            session.add(pokemon)
-            await session.flush()
+        batch_size = 50  # Tamanho de lote adequado para o sistema
+        sleep_time = 1  # Tempo de espera entre os lotes
 
-            types = [type for type in poke.get('types', [])]
-            for type in types:
-                type = Type(pokemon_id=pokemon.id, name=type['type']['name'])
-                session.add(type)
+        for i in range(0, len(tasks), batch_size):
+            batch_tasks = tasks[i:i+batch_size]
+            results = await asyncio.gather(*batch_tasks)
 
-            if i % batch_size == 0:
-                await session.commit()
+            # Processamento dos resultados em lotes
+            for poke in results:
+                if poke:  # Verifica se o resultado não é None
+                    data = format_data(data=poke)
+                    pokemon = Pokemon(**data)
+                    session.add(pokemon)
+
+                    types = [type_info for type_info in poke.get('types', [])]
+                    for type_info in types:
+                        type_obj = Type(pokemon_id=pokemon.id, name=type_info['type']['name'])
+                        session.add(type_obj)
+
+                # Commit a cada lote processado
+                if (i + batch_size) % batch_size == 0 or i + len(batch_tasks) == len(tasks):
+                    await session.commit()
+
+            await asyncio.sleep(sleep_time)  # Atraso antes do próximo lote
+
         try:
-            await session.commit()
-        except:
+            await session.commit()  # Commit final para itens restantes
+        except Exception as e:
+            print('Commit error:', e)
             pass
+        import time
+        time.sleep(90)
         print('Finished')
+
 
 asyncio.run(async_upgrade())

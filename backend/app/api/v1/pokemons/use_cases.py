@@ -11,10 +11,10 @@ class ListAllPokemons:
     def __init__(self, session: AsyncSession) -> None:
         self.async_session = session
 
-    async def execute(self, limit: int = 0, offset: int = 0) -> AsyncIterator[BasePokemonSchema]:
+    async def execute(self, limit: int = 0, offset: int = 0) -> AsyncIterator[FullPokemonDetailSchema]:
         async with self.async_session.begin() as session:
-            async for pokemon in PokemonRepository(session=session).get_all(limit=limit, offset=offset):
-                yield BasePokemonSchema.model_validate(pokemon)
+            async for pokemon in PokemonRepository(session=session).get_all(limit=limit, offset=offset, include_types=True):
+                yield FullPokemonDetailSchema.model_validate(pokemon)
 
 class ReadPokemon:
     def __init__(self, session: AsyncSession) -> None:
