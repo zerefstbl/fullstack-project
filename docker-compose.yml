@@ -59,6 +59,18 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: rocketman-tech-test
 
+  bo:
+    build: ./frontend
+    command: |
+      bash -c 'npm start'
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    environment:
+      BASE_URL: http://api:8000/api/v1
+
+
 volumes:
   postgres_data:
   postgres_test_data:

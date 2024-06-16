@@ -16,6 +16,11 @@ class ListAllPokemons:
             async for pokemon in PokemonRepository(session=session).get_all(limit=limit, offset=offset, include_types=True):
                 yield FullPokemonDetailSchema.model_validate(pokemon)
 
+    async def count(self) -> int:
+        async with self.async_session.begin() as session:
+            count = await PokemonRepository(session=session).get_count()
+            return count or 0
+
 class ReadPokemon:
     def __init__(self, session: AsyncSession) -> None:
         self.async_session = session

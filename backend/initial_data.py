@@ -59,6 +59,7 @@ async def async_upgrade() -> None:
         sleep_time = 1  # Tempo de espera entre os lotes
 
         for i in range(0, len(tasks), batch_size):
+            print('LOTE: ', batch_size)
             batch_tasks = tasks[i:i+batch_size]
             results = await asyncio.gather(*batch_tasks)
 
@@ -85,8 +86,6 @@ async def async_upgrade() -> None:
         except Exception as e:
             print('Commit error:', e)
             pass
-        import time
-        time.sleep(90)
         print('Finished')
 
 

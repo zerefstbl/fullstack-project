@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict
-from typing import List
+from typing import List, Optional
 
 class BasePokemonSchema(BaseModel):
     id: int
@@ -25,5 +25,11 @@ class TypeSchema(BaseModel):
 class FullPokemonDetailSchema(BasePokemonSchema):
     types: List[TypeSchema]
 
+class Pagination(BaseModel):
+    total: int
+    next: Optional[int] = None
+    previous: Optional[int] = None
+
 class ReadAllPokemonSchema(BaseModel):
     pokemons: List[FullPokemonDetailSchema]
+    pagination: Pagination
