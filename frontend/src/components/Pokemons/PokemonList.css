@@ -1,0 +1,27 @@
+.pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(250px, 1fr)); /* Ajusta o número de colunas automaticamente */
+    gap: 20px; /* Espaçamento entre os cards */
+    padding: 20px; /* Espaçamento ao redor da grid */
+  }
+
+  .pokemon-card {
+    border: 1px solid #ccc; /* Borda para cada card */
+    padding: 20px; /* Espaçamento interno para cada card */
+    text-align: center; /* Centraliza o texto dentro do card */
+    background-color: #fff; /* Fundo branco para os cards */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve para os cards */
+    border-radius: 8px; /* Bordas arredondadas */
+  }
+
+  .pokemon-card img {
+    width: 100%; /* Ajusta a largura da imagem para ocupar todo o espaço do card */
+    height: auto; /* Mantém a proporção da imagem */
+    max-width: 150px; /* Define um tamanho máximo para a imagem */
+    margin-bottom: 10px; /* Espaçamento inferior entre a imagem e o texto */
+  }
+
+  .pokemon-card h2 {
+    font-size: 1.2em; /* Ajusta o tamanho do texto */
+    margin: 10px 0 0; /* Espaçamento superior entre a imagem e o texto */
+  }
