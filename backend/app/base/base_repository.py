@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from typing import AsyncIterator
 from sqlalchemy import func
 
-T = TypeVar("T")  # Tipo genérico para o modelo
+T = TypeVar("T")
 
 class BaseRepository(Generic[T]):
     def __init__(self, session: AsyncSession, model: Type[T]):
