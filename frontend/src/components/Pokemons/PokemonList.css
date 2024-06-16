@@ -1,49 +1,49 @@
 .pokemon-grid {
     display: grid;
     width: 70%;
-    grid-template-columns: repeat(3, minmax(250px, 1fr)); /* Ajusta o número de colunas automaticamente */
-    gap: 20px; /* Espaçamento entre os cards */
-    padding: 20px; /* Espaçamento ao redor da grid */
+    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
     margin: auto;
   }
 
   .pokemon-card {
-    border: 1px solid #ccc; /* Borda para cada card */
-    padding: 20px; /* Espaçamento interno para cada card */
-    text-align: center; /* Centraliza o texto dentro do card */
-    background-color: #fff; /* Fundo branco para os cards */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve para os cards */
-    border-radius: 12px; /* Bordas arredondadas */
-    transition: transform 0.2s; /* Transição suave para efeito de hover */
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    transition: transform 0.2s;
   }
 
   .pokemon-card:hover {
-    transform: scale(1.05); /* Efeito de aumento no hover */
+    transform: scale(1.05);
   }
 
   .pokemon-card img {
-    width: 150px; /* Largura fixa para a imagem */
-    height: auto; /* Mantém a proporção da imagem */
-    margin-bottom: 10px; /* Espaçamento inferior entre a imagem e o texto */
+    width: 150px;
+    height: auto;
+    margin-bottom: 10px;
   }
 
   .pokemon-card h2 {
-    font-size: 1.5em; /* Ajusta o tamanho do texto */
-    margin: 10px 0 0; /* Espaçamento superior entre a imagem e o texto */
+    font-size: 1.5em;
+    margin: 10px 0 0;
     font-weight: bold;
   }
 
   .pokemon-card .types {
     display: flex;
     justify-content: center;
-    gap: 10px; /* Espaçamento entre os tipos */
-    margin-top: 10px; /* Espaçamento superior para os tipos */
+    gap: 10px;
+    margin-top: 10px;
   }
 
   .pokemon-card .type {
-    background-color: #eee; /* Cor de fundo para os tipos */
-    border-radius: 12px; /* Bordas arredondadas para os tipos */
-    padding: 5px 10px; /* Espaçamento interno para os tipos */
-    font-size: 0.9em; /* Tamanho do texto dos tipos */
-    color: #333; /* Cor do texto dos tipos */
+    background-color: #eee;
+    border-radius: 12px;
+    padding: 5px 10px;
+    font-size: 0.9em;
+    color: #333;
   }

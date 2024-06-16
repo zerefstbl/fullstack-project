@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fetchPokemonById } from '../../redux/pokemonSlice';
+import { fetchPokemonById } from '../../redux/pokemons/pokemonSlice';
 import './PokemonDetail.css'; // Importe seu arquivo CSS aqui
 
 const PokemonDetail = () => {

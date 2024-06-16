@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchPokemons } from '../../redux/pokemonSlice';
-import { useNavigate } from 'react-router-dom'; // Importa o hook useHistory
+import { fetchPokemons } from '../../redux/pokemons/pokemonSlice';
+import { useNavigate } from 'react-router-dom';
 import './PokemonList.css';
 
 const PokemonList = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Inicializa o hook useHistory
+  const navigate = useNavigate();
   const pokemons = useSelector((state) => state.pokemon.pokemons);
   const status = useSelector((state) => state.pokemon.status);
 
@@ -17,7 +17,6 @@ const PokemonList = () => {
   }, [dispatch, status]);
 
   const handlePokemonClick = (pokemon) => {
-    // Navega para a rota /pokemon/id do Pokémon selecionado
     navigate(`/pokemon/${pokemon.id}`);
   };
 
