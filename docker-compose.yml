@@ -52,6 +52,8 @@ services:
     depends_on:
       - db-test
       - api
+    env_file:
+      - .env
     environment:
       APP_CONFIG_FILE: test
       POSTGRES_HOST: db-test
